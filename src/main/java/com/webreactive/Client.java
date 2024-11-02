@@ -7,7 +7,7 @@ import java.io.IOException;
 
 public class Client {
    public static void main(String[] args) throws IOException {
-      String BASE_URL = "http://localhost:8080";
+      String BASE_URL = "http://host.docker.internal:8080";
 		String MY_URI = "/user";
 		// String MY_URI = "with delay";
 		WebClient.create(BASE_URL)

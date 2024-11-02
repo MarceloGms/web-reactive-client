@@ -17,6 +17,7 @@ RUN apt update -y && apt install -y \
     vim \
     zsh \
     less \
+    make \
     postgresql-client \
     && apt clean all
 
