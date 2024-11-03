@@ -21,4 +21,8 @@ public class Media implements Serializable {
    private float average_rating;
 
    private boolean type;
+
+   public String typeConvert() {
+      return type ? "Movie" : "TV Show";
+   }
 }
