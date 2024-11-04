@@ -64,11 +64,11 @@ public class ReactiveService {
                );
    }
 
-    // REQ 4
-    // TODO: Total count of media items that are subscribed
+   // REQ 4
+   // TODO: Total count of media items that are subscribed
 
-    // REQ 5
-    public void getMedia80s(String fileName) {
+   // REQ 5
+   public void getMedia80s(String fileName) {
       fetchAllMedia()
                .filter(m -> m.getRelease_date().getYear() >= 1980 && m.getRelease_date().getYear() < 1990)
                .sort((m1, m2) -> Double.compare(m2.getAverage_rating(), m1.getAverage_rating()))
@@ -84,26 +84,37 @@ public class ReactiveService {
    // REQ 6
    public void ratingAvgStdMedia(String fileName) {
       fetchAllMedia()
-          .map(media -> media.getAverage_rating())
-          .reduce(new float[]{0, 0, 0}, (acc, rating) -> {
-              acc[0] += rating; // Sum of ratings
-              acc[1] += rating * rating; // Sum of squares
-              acc[2] += 1; // Count of ratings
-              return acc;
-          })
-          .map(acc -> {
-              float mean = acc[0] / acc[2];
-              float variance = (acc[1] / acc[2]) - (mean * mean);
-              float stdDeviation = (float) Math.sqrt(variance);
-              return String.format("Mean: %f, Std Dev: %f", mean, stdDeviation);
-          })
-          .transform(result -> fw.writeRows(result.flux(), fileName))
-          .subscribe(
-              null,
-              error -> System.err.println("Error writing " + fileName + ": " + error),
-              () -> System.out.println("Average rating and standard deviation written to " + fileName)
-          );
-  }
+               .map(media -> media.getAverage_rating())
+               .reduce(new float[]{0, 0, 0}, (acc, rating) -> {
+                  acc[0] += rating; // Sum of ratings
+                  acc[1] += rating * rating; // Sum of squares
+                  acc[2] += 1; // Count of ratings
+                  return acc;
+               })
+               .map(acc -> {
+                  float mean = acc[0] / acc[2];
+                  float variance = (acc[1] / acc[2]) - (mean * mean);
+                  float stdDeviation = (float) Math.sqrt(variance);
+                  return String.format("Mean: %f, Std Dev: %f", mean, stdDeviation);
+               })
+               .transform(result -> fw.writeRows(result.flux(), fileName))
+               .subscribe(
+                     null,
+                     error -> System.err.println("Error writing " + fileName + ": " + error),
+                     () -> System.out.println("Average rating and standard deviation written to " + fileName)
+               );
+   }
+
+   // REQ 7
+   public void oldestMedia(String fileName) {
+      fetchAllMedia()
+               .reduce((m1, m2) -> m1.getRelease_date().isBefore(m2.getRelease_date()) ? m1 : m2)
+               .map(media -> "Title: " + media.getTitle() + "\nRelease Date: " + media.getRelease_date() + "\n---\n")
+               .transform(m -> fw.writeRows(m.flux(), fileName))
+               .subscribe(
+                     null,
+                     error -> System.err.println("Error writing " + fileName + ": " + error),
+                     () -> System.out.println("Oldest media written to " + fileName)
+               );
+   }
 }
-
-

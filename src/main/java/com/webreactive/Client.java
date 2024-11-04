@@ -42,6 +42,9 @@ public class Client {
 				case "req6.txt":
 					rs.ratingAvgStdMedia(outputFile);
 					break;
+				case "req7.txt":
+					rs.oldestMedia(outputFile);
+					break;
 				default:
 				System.err.println("Unknown request: " + outputFile);
 				break;
