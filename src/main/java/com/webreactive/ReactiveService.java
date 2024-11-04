@@ -11,7 +11,7 @@ import reactor.util.retry.Retry;
 import java.time.Duration;
 
 @AllArgsConstructor
-public class MediaService {
+public class ReactiveService {
 
    private final WebClient webClient;
    private final FileWriter fw;
@@ -80,6 +80,30 @@ public class MediaService {
                      () -> System.out.println("Media from the 80s written to " + fileName)
                );
    }
+
+   // REQ 6
+   public void ratingAvgStdMedia(String fileName) {
+      fetchAllMedia()
+          .map(media -> media.getAverage_rating())
+          .reduce(new float[]{0, 0, 0}, (acc, rating) -> {
+              acc[0] += rating; // Sum of ratings
+              acc[1] += rating * rating; // Sum of squares
+              acc[2] += 1; // Count of ratings
+              return acc;
+          })
+          .map(acc -> {
+              float mean = acc[0] / acc[2];
+              float variance = (acc[1] / acc[2]) - (mean * mean);
+              float stdDeviation = (float) Math.sqrt(variance);
+              return String.format("Mean: %f, Std Dev: %f", mean, stdDeviation);
+          })
+          .transform(result -> fw.writeRows(result.flux(), fileName))
+          .subscribe(
+              null,
+              error -> System.err.println("Error writing " + fileName + ": " + error),
+              () -> System.out.println("Average rating and standard deviation written to " + fileName)
+          );
+  }
 }
 
 

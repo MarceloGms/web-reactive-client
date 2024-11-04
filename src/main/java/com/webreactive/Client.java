@@ -20,25 +20,27 @@ public class Client {
 		List<String> outputFiles = Arrays.asList(args);
 		WebClient webClient = WebClient.create(BASE_URL);
 		FileWriter fw = new FileWriter();
-		MediaService ms = new MediaService(webClient, fw);
-		UserService us = new UserService(webClient, fw);
+		ReactiveService rs = new ReactiveService(webClient, fw);
 
 		for (String outputFile : outputFiles) {
 			switch (outputFile.toLowerCase()) {
 				case "req1.txt":
-					ms.getMediaTitlesDates(outputFile);
+					rs.getMediaTitlesDates(outputFile);
 					break;
 				case "req2.txt":
-					ms.countMedia(outputFile);
+					rs.countMedia(outputFile);
 					break;
 				case "req3.txt":
-					ms.countGoodRatedMedia(outputFile);
+					rs.countGoodRatedMedia(outputFile);
 					break;
 				case "req4.txt":
 					// TODO
 					break;
 				case "req5.txt":
-					ms.getMedia80s(outputFile);
+					rs.getMedia80s(outputFile);
+					break;
+				case "req6.txt":
+					rs.ratingAvgStdMedia(outputFile);
 					break;
 				default:
 				System.err.println("Unknown request: " + outputFile);
