@@ -51,6 +51,9 @@ public class Client {
 				case "req9.txt":
 					rs.getMediaNamesAndUserCountsSortedByAge(outputFile);
 					break;
+				case "req10.txt":
+					rs.getAllUsersWithSubscribedMedia(outputFile);
+					break;
 				default:
 					System.err.println("Unknown request: " + outputFile);
 					break;
