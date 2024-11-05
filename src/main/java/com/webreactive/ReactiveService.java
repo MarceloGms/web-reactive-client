@@ -1,12 +1,10 @@
 package com.webreactive;
 
 import com.webreactive.entity.Media;
-import com.webreactive.entity.MediaUsers;
 import com.webreactive.entity.User;
 
 import lombok.AllArgsConstructor;
 
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -51,8 +49,8 @@ public class ReactiveService {
             return webClient.get()
                         .uri("/relationship/getMediaUsers")
                         .retrieve()
-                        .bodyToFlux(Long.class) // Expecting Long values directly
-                        .doOnNext(response -> System.out.println("Raw response: " + response))
+                        // TODO: usar media_users class
+                        .bodyToFlux(Long.class)
                         .collectList()
                         .map(response -> {
                               List<List<Long>> mediaUsers = new ArrayList<>();
@@ -194,10 +192,9 @@ public class ReactiveService {
                                           .mapToInt(Set::size) // Count the distinct users for each media item
                                           .sum();
 
-                              double average = mediaUserMap.size() > 0 ? totalUsers / mediaUserMap.size() : 0.0; // Calculate
-                                                                                                                 // average
+                              double average = mediaUserMap.size() > 0 ? totalUsers / mediaUserMap.size() : 0.0;
 
-                              return "Average users per media: " + average + "\n";
+                              return String.format("Average users per media: %.4f\n", average);
                         })
                         .transform(m -> fw.writeRows(m.flux(), fileName))
                         .subscribe(
