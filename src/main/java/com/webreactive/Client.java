@@ -11,7 +11,7 @@ public class Client {
 	private static final String BASE_URL = "http://host.docker.internal:8080";
 	// String MY_URI = "with delay";
 
-   public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException {
 		if (args.length < 1) {
 			System.out.println("\nPlease provide the output file names as program parameters.\n");
 			return;
@@ -34,7 +34,7 @@ public class Client {
 					rs.countGoodRatedMedia(outputFile);
 					break;
 				case "req4.txt":
-					// TODO
+					rs.countSubscribedMedia(outputFile);
 					break;
 				case "req5.txt":
 					rs.getMedia80s(outputFile);
@@ -45,15 +45,20 @@ public class Client {
 				case "req7.txt":
 					rs.oldestMedia(outputFile);
 					break;
+				case "req8.txt":
+					rs.averageUsersPerMedia(outputFile);
+					break;
+				case "req9.txt":
+					rs.getMediaNamesAndUserCountsSortedByAge(outputFile);
+					break;
 				default:
-				System.err.println("Unknown request: " + outputFile);
-				break;
+					System.err.println("Unknown request: " + outputFile);
+					break;
 			}
 		}
 
 		System.out.println("Press Enter to exit");
 		System.in.read();
-		
 	}
 }
 
