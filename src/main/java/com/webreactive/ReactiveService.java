@@ -47,17 +47,6 @@ public class ReactiveService {
                         .doOnError(error -> System.err.println("Error fetching users: " + error));
       }
 
-      // path ->"/relationship/1"
-      // response -> "[1,6]"
-      private Flux<Long> fetchRelationship() {
-            return webClient.get()
-                        .uri("/relationship/2")
-                        .retrieve()
-                        .bodyToFlux(Long.class) // Expecting Long values directly
-                        .doOnNext(value -> System.out.println("Retrieved value: " + value))
-                        .doOnError(error -> System.err.println("Error fetching relationship: " + error));
-      }
-
       private Mono<List<List<Long>>> fetchMediaUsers() {
             return webClient.get()
                         .uri("/relationship/getMediaUsers")
@@ -114,10 +103,15 @@ public class ReactiveService {
 
       // REQ 4
       public void countSubscribedMedia(String fileName) {
-            fetchRelationship()
-                        .count()
-                        .flatMapMany(count -> Flux.just("Subscribed media count: " + count + "\n"))
-                        .transform(m -> fw.writeRows(m, fileName))
+            fetchMediaUsers() // Use fetchMediaUsers to get the media-user relationships
+                        .map(mediaUsers -> mediaUsers.stream()
+                                    .map(pair -> pair.get(0)) // Extract the media identifiers from the pairs
+                                    .distinct() // Get distinct media identifiers
+                                    .collect(Collectors.toSet())) // Collect into a Set to remove duplicates
+                        .map(uniqueMediaIds -> "Subscribed media count: " + uniqueMediaIds.size() + "\n") // Count the
+                                                                                                          // unique
+                                                                                                          // media IDs
+                        .transform(m -> fw.writeRows(m.flux(), fileName)) // Write the result to file
                         .subscribe(
                                     null,
                                     error -> System.err.println("Error writing " + fileName + ": " + error),
