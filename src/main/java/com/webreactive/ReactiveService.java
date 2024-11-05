@@ -47,7 +47,7 @@ public class ReactiveService {
 
       private Mono<List<List<Long>>> fetchMediaUsers() {
             return webClient.get()
-                        .uri("/relationship/getMediaUsers")
+                        .uri("/relationship")
                         .retrieve()
                         // TODO: usar media_users class
                         .bodyToFlux(Long.class)
