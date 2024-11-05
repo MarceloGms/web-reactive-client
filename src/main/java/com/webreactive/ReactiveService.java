@@ -41,7 +41,7 @@ public class ReactiveService {
    public void countMedia(String fileName) {
       fetchAllMedia()
                .count()
-               .map(count -> "Media count: " + count + "\n")
+               .map(count -> "Media count: " + count + "\n---\n")
                .transform(m -> fw.writeRows(m.flux(), fileName))
                .subscribe(
                      null,
@@ -55,7 +55,7 @@ public class ReactiveService {
       fetchAllMedia()
                .filter(m -> m.getAverage_rating() > 8)
                .count()
-               .map(count -> "Good rated media count: " + count + "\n")
+               .map(count -> "Good rated media count: " + count + "\n---\n")
                .transform(m -> fw.writeRows(m.flux(), fileName))
                .subscribe(
                      null,
@@ -95,7 +95,7 @@ public class ReactiveService {
                   float mean = acc[0] / acc[2];
                   float variance = (acc[1] / acc[2]) - (mean * mean);
                   float stdDeviation = (float) Math.sqrt(variance);
-                  return String.format("Mean: %f, Std Dev: %f", mean, stdDeviation);
+                  return String.format("Mean: %f, Std Dev: %f\n---\n", mean, stdDeviation);
                })
                .transform(result -> fw.writeRows(result.flux(), fileName))
                .subscribe(
