@@ -199,7 +199,6 @@ public class ReactiveService {
                                     .flatMap(userId ->
                                           fetchAllUsers()
                                                 .filter(user -> user.getIdentifier() == userId)
-                                                .take(1) // Ensure only one user per userId
                                           )
                                     .sort((u1, u2) -> Integer.compare(u2.getAge(), u1.getAge()))
                                     .reduce("", (userInfo, user) -> {
