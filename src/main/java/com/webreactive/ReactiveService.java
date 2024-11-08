@@ -138,10 +138,10 @@ public class ReactiveService {
                               return acc;
                         })
                         .map(acc -> {
-                              float mean = acc[0] / acc[2];
-                              float variance = (acc[1] / acc[2]) - (mean * mean);
+                              float mean = acc[2] > 0 ? acc[0] / acc[2] : 0; // when theres no media put 0
+                              float variance = acc[2] > 0 ? (acc[1] / acc[2]) - (mean * mean) : 0;
                               float stdDeviation = (float) Math.sqrt(variance);
-                              return String.format("Mean: %f, Std Dev: %f\n---\n", mean, stdDeviation);
+                              return String.format("Mean: %.4f, Std Dev: %.4f\n---\n", mean, stdDeviation);
                         })
                         .transform(result -> fw.writeRows(result.flux(), fileName))
                         .subscribe(
