@@ -9,7 +9,6 @@ import java.util.List;
 public class Client {
 
 	private static final String BASE_URL = "http://host.docker.internal:8080";
-	// String MY_URI = "with delay";
 
 	public static void main(String[] args) throws IOException {
 		if (args.length < 1) {
@@ -64,9 +63,3 @@ public class Client {
 		System.in.read();
 	}
 }
-
-// primeiro req
-// falta aqui alguma cena para proteger a ligaçao, deve se dar retry 3 vezes e
-// dps cagar
-// flux.cena(https://...).map(m -> ""+m.getfile()+ " " +
-// m.getRDHC()+"").subscribe(m -> writeFile())
